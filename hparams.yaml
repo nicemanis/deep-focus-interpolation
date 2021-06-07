@@ -1,0 +1,36 @@
+io:
+  history_dir: "/../history"
+  logs_dir: "/../logs"
+  models_dir: "/../models"
+  outputs_dir: "/../outputs"
+  test_results_dir: "/../test_results"
+  weights_dir: "/../weights"
+
+data:
+  dataset: "bbbc006"
+  norm_min: 0.1
+  norm_max: 0.9
+  z_triplets:  # specify which z-levels should be used during training
+    - [ 0, 4, 8 ]  # interpolates z0, z8 to z4
+    - [ 8, 12, 16 ]
+    - [ 16, 20, 24 ]
+    - [ 24, 28, 32 ]
+
+model:
+  type: "target"  # "target" or "residual"
+  num_blocks: 2
+  num_filters: null  # [16, 32]
+  convs_per_block: 1
+
+training:
+  seed: 1234
+  epochs: 1000
+  batch_size: 4
+  validation_split: 0.2
+  patience: 5
+  loss: "mse"  # "mse", "ssim", "perceptual_loss", "combined_loss"
+  learning_rate: 1.0e-3
+  mse_weight: 1
+  ssim_weight: 0.015
+  perceptual_weight: 1
+  peceptual_loss_layer: "block1_conv1"
