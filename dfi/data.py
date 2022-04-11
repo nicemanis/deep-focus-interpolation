@@ -45,6 +45,7 @@ def load_data(hparams, subset="train", idxs=None):
                 np.expand_dims(np.array(load_imgs(hparams, z_y, subset, idxs)), axis=-1))))
 
     if hparams.model.type == "residual":
-        y = np.stack((y[:, :, :, 0] - x[:, :, :, 0], y[:, :, :, 0] - x[:, :, :, 1]), axis=-1)
-
-    return x, y
+        yr = np.stack((y[:, :, :, 0] - x[:, :, :, 0], y[:, :, :, 0] - x[:, :, :, 1]), axis=-1)
+        return x, yr, y
+    else:
+        return x, y

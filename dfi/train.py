@@ -3,11 +3,11 @@ import time
 import pickle
 import datetime
 
-from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
-
 from dfi.test import test
 from dfi.data import load_data
+from keras import backend as K
 from dfi.utils import reset_seeds
+from keras.callbacks import TensorBoard, ModelCheckpoint, EarlyStopping
 
 
 def train(model, hparams, session_name: str = None):
@@ -20,8 +20,11 @@ def train(model, hparams, session_name: str = None):
                        + "_" + hparams.training.loss\
                        + "_" + start_time.strftime("%Y%m%d_%H%M%S")
 
-    # Load data
-    x, y = load_data(hparams, subset="train")
+    # load data
+    if hparams.model.type == "residual":
+        x, y, yt = load_data(hparams, subset="train")
+    else:
+        x, y = load_data(hparams, subset="train")
 
     # Initialize callbacks
     tensorboard = TensorBoard(log_dir=os.path.join(hparams.io.logs_dir, session_name))
@@ -64,6 +67,14 @@ def train(model, hparams, session_name: str = None):
     del y
 
     # Test the model
+    from dfi.evaluate import evaluate
+
+    table = evaluate(hparams, os.path.join(hparams.io.models_dir, session_name))
+    print(table)
+
     results_dict = test(model, hparams)
     with open(os.path.join(hparams.io.test_results_dir, session_name), "wb") as f:
         pickle.dump(results_dict, f)
+
+    del model
+    K.clear_session()

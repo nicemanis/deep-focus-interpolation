@@ -80,9 +80,9 @@ class Losses:
         elif self.hparams.training.loss == "ssim":
             if self.hparams.model.type == "target":
                 return self.get_ssim_loss()
-        elif self.hparams.loss == "perceptual_loss":
+        elif self.hparams.training.loss == "perceptual_loss":
             if self.hparams.model.type == "target":
                 return self.get_perceptual_loss()
-        elif self.hparams.loss == "combined_loss":
+        elif self.hparams.training.loss == "combined_loss":
             if self.hparams.model.type == "target":
                 return self.get_combined_loss()
